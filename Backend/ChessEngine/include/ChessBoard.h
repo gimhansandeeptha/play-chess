@@ -4,7 +4,7 @@
 
 #include <vector>
 #include <string>
-#include "Piece.h"
+#include "Structs.h"
 
 class ChessBoard
 {

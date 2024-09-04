@@ -1,34 +1,35 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Iinclude -I"../../../WinBGIm-64/libbgi/include/bgi" -Wall -g
-LDFLAGS = -L"D:/Gimhan Sandeeptha/Gimhan/Projects/WinBGIm-64/build/libbgi" -lbgi -lgdi32 -lcomdlg32 -luuid -loleaut32 -lole32
+CXXFLAGS = -std=c++17 -Iinclude -I"../../WinBGIm-64/libbgi/include/bgi" -Wall -g
+LDFLAGS = -L"../../WinBGIm-64/build/libbgi" -lbgi -lgdi32 -lcomdlg32 -luuid -loleaut32 -lole32
 
-SRCS = $(wildcard src/*.cpp)
-OBJS = $(SRCS:.cpp=.o) main.o
+SRCS = $(wildcard src/*.cpp) main.cpp
+BUILD_DIR = build
+OBJS = $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SRCS))
+
 TARGET = chessengine
 
-# Detect OS (Windows vs Unix-based)
 ifeq ($(OS),Windows_NT)
+    EXE = .exe
     RM = del /Q
-    DEL_CMD = del /Q
+    MKDIR_P = if not exist "$(BUILD_DIR)\src" mkdir "$(BUILD_DIR)\src"
 else
+    EXE =
     RM = rm -f
-    DEL_CMD = rm -f
+    MKDIR_P = mkdir -p $(BUILD_DIR)/src
 endif
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -o $@$(EXE) $^ $(LDFLAGS)
 
-main.o: main.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-%.o: src/%.cpp
+$(BUILD_DIR)/%.o: %.cpp
+	$(MKDIR_P)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
 ifeq ($(OS),Windows_NT)
-	for %%f in ($(OBJS) $(TARGET)) do $(DEL_CMD) "%%f"
+	$(RM) $(BUILD_DIR)\*.o $(BUILD_DIR)\src\*.o $(TARGET)$(EXE)
 else
-	$(RM) $(OBJS) $(TARGET)
+	$(RM) $(BUILD_DIR)/*.o $(BUILD_DIR)/src/*.o $(TARGET)
 endif

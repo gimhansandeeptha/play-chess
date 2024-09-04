@@ -1,5 +1,6 @@
 #ifndef PIECE_H
 #define PIECE_H
+#include "Structs.h"
 
 class ChessBoard;
 struct Piece;
@@ -8,12 +9,6 @@ struct Piece;
 rank: is counted from white side from 1 to 8.
 file: is from left to write from "a" to "h" from the white side. File is denoted by number from 1 to 8.
 */
-struct Loc
-{
-    int rank;
-    int file;
-};
-
 class Piece
 {
 public:
